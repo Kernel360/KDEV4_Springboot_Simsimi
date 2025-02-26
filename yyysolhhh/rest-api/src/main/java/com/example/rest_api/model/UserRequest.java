@@ -16,4 +16,6 @@ public class UserRequest {
     private Integer userAge; //reference 타입 사용하기
 
     private String email;
+
+    private Boolean isKorean; // is_korean
 }
