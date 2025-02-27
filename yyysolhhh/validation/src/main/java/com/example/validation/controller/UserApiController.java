@@ -1,12 +1,18 @@
 package com.example.validation.controller;
 
+import com.example.validation.model.Api;
 import com.example.validation.model.UserRegisterRequest;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -14,16 +20,48 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserApiController {
 
     @PostMapping("")
-    public UserRegisterRequest register(
+//    public ResponseEntity<Api<? extends Object>> register(
+    public Api<UserRegisterRequest> register(
             @Valid
             @RequestBody
-            UserRegisterRequest userRegisterRequest
+            Api<UserRegisterRequest> userRegisterRequest
+//            BindingResult bindingResult
     ) {
         log.info("init : {}", userRegisterRequest);
 
-        return userRegisterRequest;
-    }
+//        if (bindingResult.hasErrors()) {
+//            var errorMessageList = bindingResult.getFieldErrors().stream()
+//                    .map(it -> {
+//                        var format = "%s : { %s } 은 %s";
+//                        var message = String.format(format, it.getField(), it.getRejectedValue(), it.getDefaultMessage());
+//                        return message;
+//                    }).collect(Collectors.toList());
+//
+//            var error = Api.Error
+//                    .builder()
+//                    .errorMessage(errorMessageList)
+//                    .build()
+//                    ;
+//
+//            var errorResponse = Api
+//                    .builder()
+//                    .resultCode(String.valueOf(HttpStatus.BAD_REQUEST.value()))
+//                    .resultMessage(HttpStatus.BAD_REQUEST.getReasonPhrase())
+//                    .error(error)
+//                    .build()
+//                    ;
+//            return errorResponse; //데이터바디가 없기 때문에 타입 지정할 수 없음. -> Object
+//        }
 
+        var body = userRegisterRequest.getData();
+
+        var response = Api.<UserRegisterRequest>builder()
+                .resultCode(String.valueOf(HttpStatus.OK.value()))
+                .resultMessage(HttpStatus.OK.getReasonPhrase())
+                .data(body)
+                .build();
+        return response;
+    }
 }
 
 /*
@@ -56,3 +94,20 @@ public class UserApiController {
     default message [phoneNumber],[Ljakarta.validation.constraints.Pattern$Flag;@fde0ee6,^\d{2,3}-\d{3,4}-\d{4}\$];
     default message ["^\d{2,3}-\d{3,4}-\d{4}\$"와 일치해야 합니다]] ]
  */
+/*
+{
+    "resultCode": null,
+    "resultMessage": null,
+    "data": {
+        "name": "홍길동",
+        "password": "sdlkjfsldk",
+        "age": 20,
+        "email": "hong@gmail.com",
+        "phone_number": "010-1111-2222",
+        "register_at": "2025-03-29T13:05:10"
+    },
+    "error": {
+        "errorMessage": null
+    }
+}
+*/
