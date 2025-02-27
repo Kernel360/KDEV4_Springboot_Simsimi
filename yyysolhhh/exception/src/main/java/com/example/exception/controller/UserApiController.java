@@ -40,6 +40,11 @@ public class UserApiController {
 //        user.setAge();
 //        user.setName();
 
+        if (true) {
+            throw new RuntimeException("message");
+        }
+
+
         var user = userList.stream()
                 .filter(
                         it -> it.getId().equals(userId) //it - userList에 들어있는 객체들
